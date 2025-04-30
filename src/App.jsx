@@ -2,23 +2,34 @@
 
 import { useState } from "react";
 
-
-
 const App = () => {
+  
   function handleAddFighter(zombieFighter){
     if(money >= zombieFighter.price){
       const newTeam =[... team, zombieFighter];
       setTeam(newTeam)
       setZombieFighters(zombieFighters.filter(z => z.id !== zombieFighter.id))
-      console.log(zombieFighter.price)
+      //console.log(zombieFighter.price)
       setMoney(money - zombieFighter.price)
-      //const totalStrength += zombieFighter.strength
-      //console.log(totalStrength) 
+      const totalStrength = team.reduce(
+        (totalStrength, zombieFighter) => totalStrength + zombieFighter.strength, 0
+      )
+      const totalAgility = team.reduce(
+        (totalAgility, zombieFighter) => totalAgility + zombieFighter.agility, 0
+      )
+      console.log(totalAgility)
+      console.log(totalStrength)
     } else {
       console.log("Not Enough Money")
     }
     
     
+  }
+  function handleRemoveFighter(teamMember){
+    const newZombieFighters=[...zombieFighters, teamMember]
+    setZombieFighters(newZombieFighters)
+    setTeam(team.filter(z => z.id !== teamMember.id))
+    setMoney(money + teamMember.price)
   }
   const [team, setTeam] = useState([
 
@@ -116,10 +127,10 @@ const App = () => {
         return(
           <ul key={id}>
             <img src={zombieFighter.img} alt={zombieFighter.altImg}/>
-            <li>{zombieFighter.name}</li>
-            <li>{zombieFighter.price}</li>
-            <li>{zombieFighter.strength}</li>
-            <li>{zombieFighter.agility}</li>
+            <li>Name : {zombieFighter.name}</li>
+            <li>Price : {zombieFighter.price}</li>
+            <li>Strength : {zombieFighter.strength}</li>
+            <li>Agility : {zombieFighter.agility}</li>
             <button onClick={() => handleAddFighter(zombieFighter)}>＋</button>
 
           </ul>
@@ -128,9 +139,6 @@ const App = () => {
       <h2>Your Team</h2>
       {team.length === 0 ? <p>Pick Some Team Members!!</p> : ''}
       {team.map((teamMember, id) => {
-          
-
-        
           return(
             <ul key={id}>
               <img src={teamMember.img} alt={teamMember.altImg}/>
@@ -138,12 +146,14 @@ const App = () => {
               <li>{teamMember.price}</li>
               <li>{teamMember.strength}</li>
               <li>{teamMember.agility}</li>
-  
+              <button onClick={() => handleRemoveFighter(teamMember)}>❌</button>
             </ul>
   
           )
 
       })}
+
+
     </>
 
   );
